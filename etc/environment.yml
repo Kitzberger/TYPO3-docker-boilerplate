@@ -10,12 +10,12 @@
 # Webserver
 
 # General
-WEB_DOCUMENT_ROOT=/app/web/
+WEB_DOCUMENT_ROOT=/app/html/
 WEB_DOCUMENT_INDEX=index.php
 # (TYPO3 CLI entrypoint < 8 LTS)
-CLI_SCRIPT=php /app/web/typo3/cli_dispatch.phpsh
+CLI_SCRIPT=php /app/html/typo3/cli_dispatch.phpsh
 # (TYPO3 CLI entrypoint >= 8 LTS)
-#CLI_SCRIPT=php /app/web/typo3/sysext/core/bin/typo3
+#CLI_SCRIPT=php /app/html/typo3/sysext/core/bin/typo3
 
 #######################################
 # PHP settings
