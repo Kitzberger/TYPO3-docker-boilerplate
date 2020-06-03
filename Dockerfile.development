@@ -64,21 +64,38 @@ RUN ln -sf /opt/docker/etc/cron/crontab /etc/cron.d/docker-boilerplate \
 # Configure volume/workdir
 WORKDIR /app/
 
-RUN apt-get -qq update && apt-get -q install -y --force-yes \
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
+    apt-get -qq update && apt-get -q install -y --force-yes \
     bash-completion \
     make \
     patch \
     sudo \
     mysql-client \
-    npm \
-    nodejs
+    jq
+
+# Install node
+RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - && \
+    sudo apt-get -q install -y -V nodejs build-essential
+
+# Install yarn
+RUN npm install -g yarn
+
+# Install Sass
+#RUN apt-get -q install -y --force-yes \
+#    gem ruby-full ruby2.5-dev build-essential
+#RUN gem update --system && \
+#    gem install compass && \
+#    gem install sass-globbing
 
 # Allow "application" user to sudo to root
 RUN echo 'application ALL=NOPASSWD: ALL' > /etc/sudoers.d/application
 RUN ( echo "cd /app" ; echo "export TYPO3_CONTEXT=Development/Docker" ) >> /home/application/.bashrc
 
-# Install clitools (ct)
-RUN wget -O/usr/local/bin/ct https://www.achenar.net/clicommand/clitools.phar && chmod 777 /usr/local/bin/ct
+# Install latest release of clitools (ct)
+RUN set -ex && \
+        latest_url=$(curl -s https://api.github.com/repos/kitzberger/clitools/releases/latest | jq -r ".assets[].browser_download_url") && \
+        wget -O/usr/local/bin/ct $latest_url && \
+        chmod 777 /usr/local/bin/ct
 
 ADD container-files /
 
