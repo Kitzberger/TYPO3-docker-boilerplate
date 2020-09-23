@@ -24,6 +24,11 @@ services:
       - ./app/:/app/
       - ./:/docker/
       - $SSH_AUTH_SOCK:/ssh-agent
+      # To speed up composer or yarn inside and outside, use a shared cache:
+      - ~/.composer/auth.json:/home/application/.composer/auth.json:ro
+      - ~/.composer/cache:/home/application/.composer/cache
+      - ~/.cache/yarn:/home/application/.cache/yarn
+      - ~/.cache/bower:/home/application/.cache/bower
     # cap and privileged needed for slowlog
     cap_add:
       - SYS_PTRACE
